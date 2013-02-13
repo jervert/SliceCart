@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<title>SliceCart</title>
+	<script src="assets/libs/jquery-1.9.1.min.js"></script>
+	<script src="assets/libs/underscore-min.js"></script>
+	<script src="jquery.slicecart-1.0.js"></script>
+
+	<script>
+		jQuery(document).ready(function () {
+			$.fn.dataSum();
+		});
+	</script>
+</head>
+<body>
+
+
+<table data-sum-area aria-live="polite">
+	<thead>
+		<tr>
+			<th scope="col">Amount</th>
+			<th scope="col">Products</th>
+			<th scope="col">Unit price</th>
+			<th scope="col">Total</th>
+		</tr>
+	</thead>
+	<tfoot>
+		
+		<tr>
+			<th scope="row" colspan="3">Shipping</th>
+			<td><span data-sum-charge-total-overall-additional-cost>10</span> EUR</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="3">VAT 21%</th>
+			<td><span data-sum-charge-total-overall-tax="21">0</span> EUR</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="3">RE 5.20%</th>
+			<td><span data-sum-charge-total-overall-tax="5.20">0</span> EUR</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="3">Total</th>
+			<td><span data-sum-charge-total-overall>0</span> EUR</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="3">Products</th>
+			<td><span data-sum-products-total-overall>0</span></td>
+		</tr>
+	</tfoot>
+
+	<tbody>
+		<tr data-sum-section>
+			<td>
+				<input type="num" id="sum_1" value="0" data-sum-product />
+				<input type="num" id="sum_2" value="0" data-sum-product />
+				<input type="num" id="sum_3" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge>21</span> EUR</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+		<tr data-sum-section>
+			<td>
+				<input type="num" id="sum_4" value="0" data-sum-product />
+				<input type="num" id="sum_5" value="0" data-sum-product />
+				<input type="num" id="sum_6" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge>5.20</span> EUR</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+		<tr data-sum-section>
+			<td>
+				<input type="num" id="sum_7" value="0" data-sum-product />
+				<input type="num" id="sum_8" value="0" data-sum-product />
+				<input type="num" id="sum_9" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge>12.34</span> EUR</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+	</tbody>
+</table>
+
+</body>
+</html>
