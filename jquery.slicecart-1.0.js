@@ -19,8 +19,9 @@
       fnBase = {
         el: {},
         localice: function (num) {
+          num = num.toFixed(2);
           if (op.decimal === ',') {
-            num = num.toString().replace('.', ',');
+            num = num.toString(10).replace('.', ',');
           }
           return num;
         },
@@ -46,7 +47,7 @@
         },
         setTotalProducts: function (el, num) {
           var self = this;
-          el.text(self.localice(num));
+          el.text(num);
         },
         setTotalCharge: function (area, charge) {
           var self = this,
@@ -56,12 +57,12 @@
           area.find(op.sel_tax_base).text(self.localice(costsAddedCharge));
           area.find(op.sel_area_charge_total).text(self.localice(taxedCharge));
         },
-        addTaxes: function (area, charge) {
+        addTaxes: function (area, charge) { // Tax value must be float number of the percentage
           var self = this,
             taxedCharge = charge;
           area.find(op.sel_taxes).each(function (index, tax) {
             var taxPercent = parseFloat($(tax).attr(op.attr_taxes)),
-              taxCost = charge / 100 * taxPercent;
+              taxCost = parseFloat((charge / 100 * taxPercent).toFixed(2));
             taxedCharge += taxCost;
             $(tax).text(self.localice(taxCost));
           });
