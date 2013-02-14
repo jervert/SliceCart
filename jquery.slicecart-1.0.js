@@ -1,6 +1,7 @@
 (function ($) {
   $.fn.dataSum = function (options, extendedFn) {
     var defaults = {
+      decimal: '.',
       sel_area: '[data-sum-area]',
       sel_subarea: '[data-sum-section]',
       sel_area_products_total: '[data-sum-products-total-overall]',
@@ -17,13 +18,25 @@
       op = $.extend(true, defaults, options),
       fnBase = {
         el: {},
+        localice: function (num) {
+          if (op.decimal === ',') {
+            num = num.toString().replace('.', ',');
+          }
+          return num;
+        },
+        unlocalice: function (num) {
+          if (op.decimal === ',') {
+            num = num.replace(',', '.');
+          }
+          return parseFloat(num);
+        },
         sumElements: function (el, elTotal) {
           var self = this,
             total = 0,
             numElementValue;
 
           el.find(op.sel_num).each(function (index, numElement) {
-            numElementValue = ($(numElement).is('input')) ? $(numElement).val() :  $(numElement).text();
+            numElementValue = ($(numElement).is('input')) ? $(numElement).val() :  self.unlocalice($(numElement).text());
             total += parseInt(numElementValue, 10);
           });
 
@@ -32,29 +45,32 @@
           return total;
         },
         setTotalProducts: function (el, num) {
-          el.text(num);
+          var self = this;
+          el.text(self.localice(num));
         },
         setTotalCharge: function (area, charge) {
           var self = this,
             costsAddedCharge = self.addAdditionalCosts(area, charge),
             taxedCharge = self.addTaxes(area, costsAddedCharge);
 
-          area.find(op.sel_tax_base).text(costsAddedCharge);
-          area.find(op.sel_area_charge_total).text(taxedCharge);
+          area.find(op.sel_tax_base).text(self.localice(costsAddedCharge));
+          area.find(op.sel_area_charge_total).text(self.localice(taxedCharge));
         },
         addTaxes: function (area, charge) {
-          var taxedCharge = charge;
+          var self = this,
+            taxedCharge = charge;
           area.find(op.sel_taxes).each(function (index, tax) {
             var taxPercent = parseFloat($(tax).attr(op.attr_taxes)),
               taxCost = charge / 100 * taxPercent;
             taxedCharge += taxCost;
-            $(tax).text(taxCost);
+            $(tax).text(self.localice(taxCost));
           });
           return taxedCharge;
         },
         addAdditionalCosts: function (area, charge) {
+          var self = this;
           area.find(op.sel_additional_costs).each(function (index, cost) {
-            charge += parseFloat($(cost).text());
+            charge += self.unlocalice($(cost).text());
           });
           return charge;
         },
@@ -67,9 +83,9 @@
 
             subareas.each(function (index, subarea) {
               var total_subarea_products = self.sumElements($(subarea), op.sel_subarea_products_total),
-                charge = parseFloat($(subarea).find(op.sel_product_charge).text()),
+                charge = self.unlocalice($(subarea).find(op.sel_product_charge).text()),
                 total_product_charge = charge * total_subarea_products;
-              $(subarea).find(op.sel_subarea_charge_total).text(total_product_charge);
+              $(subarea).find(op.sel_subarea_charge_total).text(self.localice(total_product_charge));
               total_areas_products += total_subarea_products;
               total_areas_charges += total_product_charge;
             });
