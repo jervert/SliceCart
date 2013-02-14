@@ -78,7 +78,7 @@
         init: function (area, index) {
           var self = this,
             subareas = area.find(op.sel_subarea);
-          area.find(op.sel_num).on('keyup.sum', function (ev) {
+          area.find(op.sel_num).on('change.sum, keyup.sum', function (ev) {
             var total_areas_products = 0,
               total_areas_charges = 0;
 
