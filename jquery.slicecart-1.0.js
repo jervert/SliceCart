@@ -11,7 +11,8 @@
       sel_additional_costs: '[data-sum-charge-total-overall-additional-cost]',
       sel_taxes: '[data-sum-charge-total-overall-tax]',
       attr_taxes: 'data-sum-charge-total-overall-tax',
-      sel_area_charge_total: '[data-sum-charge-total-overall]'
+      sel_area_charge_total: '[data-sum-charge-total-overall]',
+      sel_tax_base: '[data-sum-charge-total-overall-tax-base]'
     },
       op = $.extend(true, defaults, options),
       fnBase = {
@@ -35,10 +36,10 @@
         },
         setTotalCharge: function (area, charge) {
           var self = this,
-            taxedCharge,
-            costsAddedCharge = self.addAdditionalCosts(area, charge);
-          taxedCharge = self.addTaxes(area, costsAddedCharge);
+            costsAddedCharge = self.addAdditionalCosts(area, charge),
+            taxedCharge = self.addTaxes(area, costsAddedCharge);
 
+          area.find(op.sel_tax_base).text(costsAddedCharge);
           area.find(op.sel_area_charge_total).text(taxedCharge);
         },
         addTaxes: function (area, charge) {
