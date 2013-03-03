@@ -12,15 +12,28 @@
 			$.fn.dataSum();
 		});
 	</script>
+	<style>
+		body {font-family:arial, sans-serif; font-size:12px;}
+		table {width:920px;}
+		td, th {border:1px solid #ccc;}
+		tfoot th {text-align:right;}
+		input {width:40px;}
+	</style>
 </head>
 <body>
 
 
 <table data-sum-area aria-live="polite">
+	<col width="26%" />
+	<col width="20%" />
+	<col width="16%" />
+	<col width="22%" />
+	<col width="16%" />
 	<thead>
 		<tr>
+			<th scope="col">Product</th>
 			<th scope="col">Amount</th>
-			<th scope="col">Products</th>
+			<th scope="col">Units</th>
 			<th scope="col">Unit price</th>
 			<th scope="col">Total</th>
 		</tr>
@@ -28,60 +41,74 @@
 	<tfoot>
 		
 		<tr>
-			<th scope="row" colspan="3">Shipping</th>
+			<th scope="row" colspan="4">Shipping</th>
 			<td><span data-sum-charge-total-overall-additional-cost>10</span> EUR</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="3">Tax base</th>
+			<th scope="row" colspan="4">Tax base</th>
 			<td><span data-sum-charge-total-overall-tax-base>0</span> EUR</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="3">VAT 21%</th>
+			<th scope="row" colspan="4">VAT 21%</th>
 			<td><span data-sum-charge-total-overall-tax="21">0</span> EUR</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="3">RE 5.20%</th>
+			<th scope="row" colspan="4">RE 5.20%</th>
 			<td><span data-sum-charge-total-overall-tax="5.20">0</span> EUR</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="3">Total</th>
+			<th scope="row" colspan="4">Total</th>
 			<td><span data-sum-charge-total-overall>0</span> EUR</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="3">Products</th>
+			<th scope="row" colspan="4">Units</th>
 			<td><span data-sum-products-total-overall>0</span></td>
 		</tr>
 	</tfoot>
 
 	<tbody>
 		<tr data-sum-section>
-			<td>
-				<input type="number" min="0" step="1" id="sum_1" value="0" data-sum-product />
-				<input type="number" min="0" step="1" id="sum_2" value="0" data-sum-product />
-				<input type="number" min="0" step="1" id="sum_3" value="0" data-sum-product />
-			</td>
-			<td data-sum-products-total-section>0</td>
-			<td><span data-sum-product-charge>21</span> EUR</td>
-			<td><span data-sum-charge-total-section>0</span> EUR</td>
-		</tr>
-		<tr data-sum-section>
-			<td>
-				<input type="number" min="0" step="1" id="sum_4" value="0" data-sum-product />
-				<input type="number" min="0" step="1" id="sum_5" value="0" data-sum-product />
-				<input type="number" min="0" step="1" id="sum_6" value="0" data-sum-product />
-			</td>
-			<td data-sum-products-total-section>0</td>
-			<td><span data-sum-product-charge>5.20</span> EUR</td>
-			<td><span data-sum-charge-total-section>0</span> EUR</td>
-		</tr>
-		<tr data-sum-section>
+			<th scope="row">Product 1</th>
 			<td>
 				<input type="number" min="0" step="1" id="sum_7" value="0" data-sum-product />
 				<input type="number" min="0" step="1" id="sum_8" value="0" data-sum-product />
 				<input type="number" min="0" step="1" id="sum_9" value="0" data-sum-product />
 			</td>
 			<td data-sum-products-total-section>0</td>
-			<td><span data-sum-product-charge>12.34</span> EUR</td>
+			<td><span data-sum-product-charge data-sum-original-product-charge="11.67">11.67</span> EUR (no discounts)</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+		<tr data-sum-section>
+			<th scope="row">Product 2</th>
+			<td>
+				<input type="number" min="0" step="1" id="sum_1" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_2" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_3" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge data-sum-original-product-charge="21" data-sum-discount-by-unit="32">21.00</span> EUR (32% discount from 21)</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+		<tr data-sum-section>
+			<th scope="row">Product 3</th>
+			<td>
+				<input type="number" min="0" step="1" id="sum_4" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_5" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_6" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge data-sum-original-product-charge="5.20" data-sum-discount-by-unit="20">5.20</span> EUR (20% discount from 5.20)</td>
+			<td><span data-sum-charge-total-section>0</span> EUR</td>
+		</tr>
+		<tr data-sum-section>
+			<th scope="row">Product 4</th>
+			<td>
+				<input type="number" min="0" step="1" id="sum_7" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_8" value="0" data-sum-product />
+				<input type="number" min="0" step="1" id="sum_9" value="0" data-sum-product />
+			</td>
+			<td data-sum-products-total-section>0</td>
+			<td><span data-sum-product-charge data-sum-original-product-charge="10" data-sum-discount-by-unit-increments='{"discounts": [{"quantityMin": 0, "discount": 0}, {"quantityMin": 10, "discount": 20}, {"quantityMin": 20, "discount": 25.58875}, {"quantityMin": 50, "discount": 31.98594}]}'>10.00</span> EUR (initial 0% discount, 20% from 10 units, 25.6% from 20 units, 32% from 50 units)</td>
 			<td><span data-sum-charge-total-section>0</span> EUR</td>
 		</tr>
 	</tbody>

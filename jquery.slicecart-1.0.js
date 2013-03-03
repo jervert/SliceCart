@@ -13,7 +13,12 @@
       sel_taxes: '[data-sum-charge-total-overall-tax]',
       attr_taxes: 'data-sum-charge-total-overall-tax',
       sel_area_charge_total: '[data-sum-charge-total-overall]',
-      sel_tax_base: '[data-sum-charge-total-overall-tax-base]'
+      sel_tax_base: '[data-sum-charge-total-overall-tax-base]',
+      sel_discount_by_unit: '[data-sum-discount-by-unit]',
+      attr_discount_by_unit: 'data-sum-discount-by-unit',
+      attr_original_product_charge: 'data-sum-original-product-charge',
+      sel_discount_by_unit_increments: '[data-sum-discount-by-unit-increments]',
+      attr_discount_by_unit_increments: 'data-sum-discount-by-unit-increments'
     },
       op = $.extend(true, defaults, options),
       fnBase = {
@@ -75,16 +80,52 @@
           });
           return charge;
         },
+        applyInitialPriceChanges: function (subarea) {
+          var self = this,
+            originalPrice,
+            discount,
+            priceWithDiscount,
+            $priceWithDiscountEl = subarea.find(op.sel_discount_by_unit);
+          if ($priceWithDiscountEl.length) {
+            originalPrice = parseFloat($priceWithDiscountEl.attr(op.attr_original_product_charge));
+            discount = parseFloat($priceWithDiscountEl.attr(op.attr_discount_by_unit));
+            priceWithDiscount = originalPrice - (originalPrice / 100 * discount);
+            $priceWithDiscountEl.text(self.localice(priceWithDiscount));
+          }
+        },
+        getCharge: function (subarea, total_subarea_products) {
+          var self = this,
+            currentCharge = self.unlocalice(subarea.find(op.sel_product_charge).text()),
+            newCharge = currentCharge,
+            increments,
+            $priceWithDiscountEl = subarea.find(op.sel_discount_by_unit_increments),
+            originalPrice = parseFloat($priceWithDiscountEl.attr(op.attr_original_product_charge));
+          if ($priceWithDiscountEl.length) {
+            increments = JSON.parse($priceWithDiscountEl.attr(op.attr_discount_by_unit_increments));
+            $.each(increments.discounts, function (index, step) {
+              if (total_subarea_products >= step.quantityMin) {
+                newCharge = originalPrice - (originalPrice / 100 * step.discount);
+              }
+            });
+          }
+          if (newCharge !== currentCharge) {
+            subarea.find(op.sel_product_charge).text(self.localice(newCharge));
+          }
+          return newCharge.toFixed(2);
+        },
         init: function (area, index) {
           var self = this,
             subareas = area.find(op.sel_subarea);
+          subareas.each(function (index, subarea) {
+            self.applyInitialPriceChanges($(subarea));
+          });
           area.find(op.sel_num).on('change.sum, keyup.sum', function (ev) {
             var total_areas_products = 0,
               total_areas_charges = 0;
 
             subareas.each(function (index, subarea) {
               var total_subarea_products = self.sumElements($(subarea), op.sel_subarea_products_total),
-                charge = self.unlocalice($(subarea).find(op.sel_product_charge).text()),
+                charge = self.getCharge($(subarea), total_subarea_products),
                 total_product_charge = charge * total_subarea_products;
               $(subarea).find(op.sel_subarea_charge_total).text(self.localice(total_product_charge));
               total_areas_products += total_subarea_products;
