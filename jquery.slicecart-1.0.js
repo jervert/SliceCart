@@ -18,7 +18,9 @@
       attr_discount_by_unit: 'data-sum-discount-by-unit',
       attr_original_product_charge: 'data-sum-original-product-charge',
       sel_discount_by_unit_increments: '[data-sum-discount-by-unit-increments]',
-      attr_discount_by_unit_increments: 'data-sum-discount-by-unit-increments'
+      attr_discount_by_unit_increments: 'data-sum-discount-by-unit-increments',
+      sel_shipping: '[data-sum-shipping]',
+      attr_shipping: 'data-sum-shipping'
     },
       op = $.extend(true, defaults, options),
       fnBase = {
@@ -46,13 +48,16 @@
             total += parseInt(numElementValue, 10);
           });
 
-          self.setTotalProducts(el.find(elTotal), total);
+          self.setTotalProducts(el.find(elTotal), total, false);
 
           return total;
         },
-        setTotalProducts: function (el, num) {
+        setTotalProducts: function (el, num, shippingCharge, $area) {
           var self = this;
           el.text(num);
+          if (shippingCharge) {
+            self.applyShippingChanges($area);
+          }
         },
         setTotalCharge: function (area, charge) {
           var self = this,
@@ -93,7 +98,30 @@
             $priceWithDiscountEl.text(self.localice(priceWithDiscount));
           }
         },
-        getCharge: function (subarea, total_subarea_products) {
+        applyShippingChanges: function ($area) {
+          var self = this,
+            $shippingChargeEl = $area.find(op.sel_shipping),
+            shippingChargeRules,
+            shippingChargeRulesObject,
+            numOveralProducts,
+            newShippingCharge;
+          if ($shippingChargeEl.length) {
+            shippingChargeRules = $shippingChargeEl.attr(op.attr_shipping);
+            shippingChargeRulesObject = JSON.parse(shippingChargeRules);
+            if (_.isNumber(shippingChargeRules)) {
+              $shippingChargeEl.text(self.localice(shippingChargeRules));
+            } else if (_.isObject(shippingChargeRulesObject)) {
+              numOveralProducts = parseInt($area.find(op.sel_area_products_total).text(), 10);
+              $.each(shippingChargeRulesObject.shippingCharges, function (index, step) {
+                if (numOveralProducts >= step.quantityMin) {
+                  newShippingCharge = step.shipping;
+                }
+              });
+              $shippingChargeEl.text(self.localice(newShippingCharge));
+            }
+          }
+        },
+        getProductCharge: function (subarea, total_subarea_products) {
           var self = this,
             currentCharge = self.unlocalice(subarea.find(op.sel_product_charge).text()),
             newCharge = currentCharge,
@@ -115,24 +143,27 @@
         },
         init: function (area, index) {
           var self = this,
-            subareas = area.find(op.sel_subarea);
+            subareas = area.find(op.sel_subarea),
+            shippingCost = area.find();
+          self.applyShippingChanges(area);
           subareas.each(function (index, subarea) {
             self.applyInitialPriceChanges($(subarea));
           });
+
           area.find(op.sel_num).on('change.sum, keyup.sum', function (ev) {
             var total_areas_products = 0,
               total_areas_charges = 0;
 
             subareas.each(function (index, subarea) {
               var total_subarea_products = self.sumElements($(subarea), op.sel_subarea_products_total),
-                charge = self.getCharge($(subarea), total_subarea_products),
+                charge = self.getProductCharge($(subarea), total_subarea_products),
                 total_product_charge = charge * total_subarea_products;
               $(subarea).find(op.sel_subarea_charge_total).text(self.localice(total_product_charge));
               total_areas_products += total_subarea_products;
               total_areas_charges += total_product_charge;
             });
+            self.setTotalProducts(area.find(op.sel_area_products_total), total_areas_products, true, area);
             self.setTotalCharge(area, total_areas_charges);
-            self.setTotalProducts(area.find(op.sel_area_products_total), total_areas_products);
           });
         }
       };
