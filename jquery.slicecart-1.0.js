@@ -1,5 +1,5 @@
 (function ($) {
-  $.fn.dataSum = function (options, extendedFn) {
+  $.fn.dataSum = function (options, fnExtended) {
     var defaults = {
       decimal: '.',
       sel_area: '[data-sum-area]',
@@ -170,7 +170,7 @@
 
     function initialize() {
       $(op.sel_area).each(function (index, area) {
-        var fn = $.extend(true, {}, fnBase);
+        var fn = $.extend(true, {}, fnBase, fnExtended);
         fn.el = $.extend({}, {
           sel_area: $(area)
         });
